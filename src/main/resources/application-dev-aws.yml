@@ -1,0 +1,22 @@
+server:
+  port: 9930
+      
+spring:
+  application:
+    name: BIP-Service
+
+                                 
+logging:
+  level:
+    test: DEBUG    
+    com:
+      netflix: WARN
+    org:
+      springframework:
+         cloud: WARN
+         web: WARN
+#         security: DEBUG
+#     ROOT: INFO
+  file: logs/test.txt
+#  pattern:
+#    console:    

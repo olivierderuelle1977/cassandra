@@ -1,0 +1,83 @@
+r4c:
+  cloudProvider: aws
+  tempFolder: /tmp/tempBIPService
+  sharedFolder: /tmpEFS
+  service:
+     userName: bipInternalUser1
+     userPassword: bipInternalUser1Pwd
+       
+management:
+  metrics:
+    enable:
+      root: false
+      jvm: true
+    export:
+      influx:
+         uri: http://influxdb.r4c-staging1.com:8086
+         db: InfluxDBStaging1
+         enabled: true
+# The interval at which metrics are sent to Influx. The default is 1 minute. 1m, 10s
+         step: 1m
+                  
+server:
+  port: 9930
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://internal-R4C-Private-Staging1-ALB-403118410.us-east-2.elb.amazonaws.com:8761/eureka
+    preferSameZoneEureka: false
+    region: us-east-2
+    availabilityZones:
+      us-east-2: us-east-2a,us-east-2b,us-east-2c
+  instance:
+# DO NOT CHANGE THE DEFAULT IN PRODUCTION: https://github.com/spring-cloud/spring-cloud-netflix/issues/373  
+#    leaseRenewalIntervalInSeconds: 1
+#    leaseExpirationDurationInSeconds: 2
+    non-secure-port: ${EXPOSED_PORT}   
+
+ribbon:
+   eureka:
+     enabled: true
+   OkToRetryOnAllOperations: true
+   # Interval to refresh the server list from the source
+   ServerListRefreshInterval: 2000
+   MaxAutoRetries: 3
+   MaxAutoRetriesNextServer: 3
+   ReadTimeout: 20000
+   ConnectTimeout: 20000
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 60000
+      
+spring:
+  application:
+    name: BIP-Service
+  sleuth:
+    sampler:
+      percentage: 1.0
+  zipkin:
+    baseUrl: http://Zipkin-Server/
+    locator:
+      discovery:
+        enabled: true
+    
+logging:
+  level:
+    rapid4cloud: INFO 
+    com:
+      netflix: WARN
+    org:
+      springframework:
+         cloud: WARN
+         web: WARN
+#         security: DEBUG   
+#     ROOT: INFO
+  file: /tmp/bipService.txt
+#  pattern:
+#    console:    

@@ -1,0 +1,11 @@
+docker volume rm cassandraVolume
+docker volume create cassandraVolume
+docker run --name cassandra -p 9042:9042 -v cassandraVolume:/var/lib/cassandra -d cassandra
+docker exec -it cassandra bash
+cqlsh
+docker logs cassandra
+
+CREATE KEYSPACE odkeyspace WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+
+starting the spring boot app for STS with vm args:
+-Dspring.profiles.active=dev-aws
